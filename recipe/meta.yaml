@@ -9,25 +9,30 @@ source:
     sha256: 0afc4411db6ca175706b2974e9630cc5a183907a04f744f4d97e11d5e11dae72
 
 build:
-    number: 0
+    number: 1
     run_exports:
         - {{ pin_subpackage('backtrace', max_pin='x.x') }}
-    skip: true  # [win]
 
 requirements:
     build:
-        - {{ compiler('c') }}
+        - {{ compiler('m2w64_c') }}  # [win]
+        - {{ compiler('c') }}        # [not win]
         - {{ stdlib("c") }}
-        - make       # [unix]
+        - make                       # [unix]
+        - m2-make                    # [win]
+        - m2-base                    # [win]
     host:
         - zlib
 
 test:
     commands:
-        - test -f ${PREFIX}/lib/libbacktrace.a
+        - test -f ${PREFIX}/lib/libbacktrace.a      # [unix]
         - test -f ${PREFIX}/lib/libbacktrace.so     # [linux]
         - test -f ${PREFIX}/lib/libbacktrace.dylib  # [osx]
-        - test -f ${PREFIX}/include/backtrace.h
+        - test -f ${PREFIX}/include/backtrace.h     # [unix]
+        - if not exist %LIBRARY_PREFIX%/lib/libbacktrace.a exit 1   # [win]
+        - if not exist %LIBRARY_PREFIX%/lib/libbacktrace.dll.a exit 1  # [win]
+        - if not exist %LIBRARY_PREFIX%/include/backtrace.h exit 1  # [win]
 
 about:
     home: https://github.com/ianlancetaylor/libbacktrace
