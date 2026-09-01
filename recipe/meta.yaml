@@ -15,9 +15,10 @@ build:
 
 requirements:
     build:
-        - {{ compiler('m2w64_c') }}  # [win]
-        - {{ compiler('c') }}        # [not win]
-        - {{ stdlib("c") }}
+        - {{ stdlib("c") }}             # [unix]
+        - {{ stdlib("m2w64_c") }}       # [win]
+        - {{ compiler("c") }}           # [unix]
+        - {{ compiler("m2w64_c") }}     # [win]
         - make                       # [unix]
         - m2-make                    # [win]
         - m2-base                    # [win]
